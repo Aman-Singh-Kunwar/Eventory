@@ -13,6 +13,7 @@ export default function BookTickets() {
   const [movie, setMovie] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [requestedSeats, setRequestedSeats] = useState(0);
+  const [bookedSeats, setBookedSeats] = useState([]);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -21,6 +22,7 @@ export default function BookTickets() {
           `http://localhost:5000/api/movies/${movieId}`,
         );
         setMovie(response.data);
+        setBookedSeats(response.data.bookedSeats || []);
       } catch (error) {
         console.error("Failed to fetch movie", error);
       }
@@ -38,6 +40,7 @@ export default function BookTickets() {
   }
 
   const handleSeatClick = (seatId) => {
+    if (bookedSeats.includes(seatId)) return;
     if (selectedSeats.includes(seatId)) {
       setSelectedSeats(selectedSeats.filter((s) => s !== seatId));
     } else {
@@ -75,9 +78,9 @@ export default function BookTickets() {
 
   if (requestedSeats === 0) {
     return (
-      <div className="min-h-screen pt-20 flex flex-col items-center px-4">
-        <div className="glass-panel p-8 rounded-xl w-full max-w-md text-center">
-          <h2 className="text-2xl font-bold text-white mb-6">How many tickets?</h2>
+      <div className="min-h-screen pt-16 pb-20 flex flex-col items-center justify-center px-4">
+      <div className="rounded-2xl p-8 w-full max-w-md text-center bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+        <h2 className="text-2xl font-bold text-white mb-6">Select Ticket Quantity</h2>
           <div className="grid grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <button
@@ -101,7 +104,7 @@ export default function BookTickets() {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-10 px-4 flex flex-col items-center">
+    <div className="min-h-screen pt-16 pb-32 px-4 flex flex-col items-center">
       <div className="w-full max-w-4xl">
         <button
           onClick={() => navigate(-1)}
@@ -134,36 +137,43 @@ export default function BookTickets() {
         {/* Seats Grid */}
         <div className="flex justify-center mb-10">
           <div className="grid grid-cols-8 gap-3 sm:gap-4">
-            {seats.map((seatId) => (
-              <button
-                key={seatId}
-                onClick={() => handleSeatClick(seatId)}
-                className={`
-                            w-8 h-8 sm:w-10 sm:h-10 rounded-t-lg text-xs font-medium transition-all
-                            ${selectedSeats.includes(seatId)
-                    ? "bg-[rgb(var(--primary))] text-white transform scale-110 shadow-lg shadow-red-500/50"
-                    : "bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-white"
-                  }
-                        `}
-              >
-                {seatId}
-              </button>
-            ))}
+            {seats.map((seatId) => {
+              const isBooked = bookedSeats.includes(seatId);
+              const isSelected = selectedSeats.includes(seatId);
+              return (
+                <button
+                  key={seatId}
+                  onClick={() => handleSeatClick(seatId)}
+                  className={`
+                              w-8 h-8 sm:w-10 sm:h-10 rounded-t-lg text-xs font-medium transition-all
+                              ${isBooked
+                      ? "bg-red-600 text-white cursor-not-allowed opacity-70"
+                      : isSelected
+                        ? "bg-amber-500 text-white transform scale-110 shadow-lg shadow-amber-500/40"
+                        : "bg-green-600 text-white hover:bg-green-500"
+                    }
+                          `}
+                  disabled={isBooked}
+                >
+                  {seatId}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Legend */}
         <div className="flex justify-center gap-6 mb-8 text-sm text-gray-400">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-700 rounded-sm"></div>
+            <div className="w-4 h-4 bg-green-600 rounded-sm"></div>
             <span>Available</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-[rgb(var(--primary))] rounded-sm"></div>
+            <div className="w-4 h-4 bg-amber-500 rounded-sm"></div>
             <span>Selected</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-800 cursor-not-allowed opacity-50 rounded-sm"></div>
+            <div className="w-4 h-4 bg-red-600 cursor-not-allowed opacity-80 rounded-sm"></div>
             <span>Sold</span>
           </div>
         </div>

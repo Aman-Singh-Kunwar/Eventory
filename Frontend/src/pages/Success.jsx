@@ -23,8 +23,8 @@ export default function Success() {
   const seatCount = booking?.seatIds?.length || 0;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] py-10">
-      <div className="glass-panel p-10 rounded-xl text-center max-w-md w-full border-green-500/30">
+    <div className="flex flex-col items-center justify-center min-h-screen pt-12 py-10 px-4">
+      <div className="p-10 rounded-2xl text-center max-w-md w-full bg-[#0d1117]/90 backdrop-blur-xl border border-green-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
         <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-green-500" />
         </div>

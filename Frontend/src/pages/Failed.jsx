@@ -3,8 +3,8 @@ import { XCircle } from 'lucide-react';
 
 export default function Failed() {
   return (
-    <div className="flex items-center justify-center min-h-[80vh]">
-      <div className="glass-panel p-10 rounded-xl text-center max-w-md w-full border-red-500/30">
+    <div className="flex items-center justify-center min-h-screen pt-12 px-4">
+      <div className="p-10 rounded-2xl text-center max-w-md w-full bg-[#0d1117]/90 backdrop-blur-xl border border-red-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
          <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <XCircle className="w-10 h-10 text-red-500" />
         </div>

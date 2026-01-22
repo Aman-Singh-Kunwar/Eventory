@@ -7,8 +7,10 @@ import Failed from "./pages/Failed";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import BookTickets from "./pages/BookTickets";
+import MovieDetails from "./pages/MovieDetails";
 import CompanyDashboard from "./pages/dashboard/CompanyDashboard";
 import AddMovie from "./pages/dashboard/AddMovie";
+import EditMovie from "./pages/dashboard/EditMovie";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -22,6 +24,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/movie/:movieId" element={<MovieDetails />} />
             <Route path="/book/:movieId" element={<ProtectedRoute><BookTickets /></ProtectedRoute>} />
             <Route path="/checkout/:bookingId" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/success/:bookingId" element={<Success />} />
@@ -30,6 +33,7 @@ export default function App() {
             {/* Company Routes */}
             <Route path="/dashboard" element={<ProtectedRoute role="company"><CompanyDashboard /></ProtectedRoute>} />
             <Route path="/dashboard/add-movie" element={<ProtectedRoute role="company"><AddMovie /></ProtectedRoute>} />
+            <Route path="/dashboard/edit/:movieId" element={<ProtectedRoute role="company"><EditMovie /></ProtectedRoute>} />
           </Routes>
         </div>
       </BrowserRouter>

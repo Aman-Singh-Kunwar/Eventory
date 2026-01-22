@@ -19,14 +19,14 @@ export default function Checkout() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
-      <div className="glass-panel p-8 rounded-xl w-full max-w-md text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen pt-12 px-4">
+      <div className="rounded-2xl p-8 w-full max-w-md text-center bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
         <div className="w-16 h-16 bg-[rgb(var(--primary))/20] text-[rgb(var(--primary))] rounded-full flex items-center justify-center mx-auto mb-6">
           <CreditCard className="w-8 h-8" />
         </div>
 
-        <h2 className="text-2xl font-bold text-white mb-2">Complete Payment</h2>
-        <p className="text-gray-400 mb-6">Secure your seats now</p>
+        <h2 className="text-2xl font-bold text-white mb-1">Complete Payment</h2>
+        <p className="text-gray-400 mb-6 text-sm">Secure your seats now</p>
 
         <div className="bg-[#161b22] p-4 rounded-lg border border-[#30363d] mb-8 text-left">
           <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Booking Reference</p>

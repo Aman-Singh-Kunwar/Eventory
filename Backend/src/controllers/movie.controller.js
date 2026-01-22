@@ -27,7 +27,7 @@ exports.addMovie = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to add movies' });
     }
 
-    const { title, description, genre, duration, posterUrl, backgroundUrl, releaseDate } = req.body;
+    const { title, description, genre, duration, posterUrl, backgroundUrl, releaseDate, trailerUrl, language, price } = req.body;
 
     const newMovie = new Movie({
       title,
@@ -36,6 +36,9 @@ exports.addMovie = async (req, res) => {
       duration,
       posterUrl,
       backgroundUrl,
+      trailerUrl,
+      language,
+      price,
       company: req.userData.userId,
       releaseDate
     });
@@ -44,6 +47,41 @@ exports.addMovie = async (req, res) => {
     res.status(201).json({ message: 'Movie added successfully', movie: newMovie });
   } catch (error) {
     res.status(500).json({ message: 'Adding movie failed', error: error.message });
+  }
+};
+
+exports.updateMovie = async (req, res) => {
+  try {
+    if (req.userData.role !== 'company') {
+      return res.status(403).json({ message: 'Not authorized to update movies' });
+    }
+
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    if (movie.company.toString() !== req.userData.userId) {
+      return res.status(403).json({ message: 'Not authorized to update this movie' });
+    }
+
+    const { title, description, genre, duration, posterUrl, backgroundUrl, releaseDate, trailerUrl, language, price } = req.body;
+
+    movie.title = title;
+    movie.description = description;
+    movie.genre = genre;
+    movie.duration = duration;
+    movie.posterUrl = posterUrl;
+    movie.backgroundUrl = backgroundUrl;
+    movie.trailerUrl = trailerUrl;
+    movie.releaseDate = releaseDate;
+    movie.language = language;
+    movie.price = price;
+
+    await movie.save();
+    res.status(200).json(movie);
+  } catch (error) {
+    res.status(500).json({ message: 'Updating movie failed', error: error.message });
   }
 };
 

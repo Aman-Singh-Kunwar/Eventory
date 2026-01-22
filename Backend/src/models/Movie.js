@@ -25,6 +25,17 @@ const movieSchema = new mongoose.Schema({
   backgroundUrl: {
     type: String // Optional: for hero section
   },
+  trailerUrl: {
+    type: String
+  },
+  language: {
+    type: String,
+    default: 'English'
+  },
+  price: {
+    type: Number,
+    default: 250
+  },
   rating: {
     type: Number,
     default: 0

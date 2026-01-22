@@ -9,6 +9,7 @@ router.get('/:id', movieController.getMovieById);
 // Protected Routes
 router.use(checkAuth);
 router.post('/', movieController.addMovie);
+router.put('/:id', movieController.updateMovie);
 router.get('/company/mine', movieController.getCompanyMovies);
 
 
