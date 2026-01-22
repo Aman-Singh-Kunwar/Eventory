@@ -32,7 +32,7 @@ export default function AddMovie() {
           duration: Number(formData.duration)
       };
 
-      await axios.post('http://localhost:8000/api/movies', payload, {
+      await axios.post('http://localhost:5000/api/movies', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/dashboard');

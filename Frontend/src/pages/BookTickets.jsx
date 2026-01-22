@@ -10,7 +10,20 @@ export default function BookTickets() {
   const { movieId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/movies/${movieId}`);
+        setMovie(response.data);
+      } catch (error) {
+        console.error("Failed to fetch movie", error);
+      }
+    };
+    if (movieId) fetchMovie();
+  }, [movieId]);
 
   // Generate seat grid
   const seats = [];
@@ -29,7 +42,9 @@ export default function BookTickets() {
     if (!selectedSeat) return;
     setLoading(true);
     try {
-      const response = await axios.post(`http://localhost:8000/api/seats/${selectedSeat}/reserve`);
+      const response = await axios.post(`http://localhost:5000/api/seats/${selectedSeat}/reserve`, {
+        movieId // Passing movieId for context, even if backend might currently ignore it
+      });
       const { bookingId } = response.data;
       navigate(`/checkout/${bookingId}`);
     } catch (error) {
@@ -47,7 +62,10 @@ export default function BookTickets() {
             <ChevronLeft className="w-4 h-4 mr-1" /> Back
         </button>
 
-        <h1 className="text-2xl font-bold text-white mb-8 text-center">Select Seats</h1>
+        <h1 className="text-2xl font-bold text-white mb-2 text-center">
+          {movie ? `Book Tickets: ${movie.title}` : 'Select Seats'}
+        </h1>
+        {movie && <p className="text-gray-400 text-center mb-8">{movie.genre.join(', ')} | {movie.duration} min</p>}
         
         {/* Screen */}
         <div className="w-full max-w-2xl mx-auto mb-12">
