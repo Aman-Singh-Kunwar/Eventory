@@ -4,17 +4,35 @@ import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
 import Failed from "./pages/Failed";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import BookTickets from "./pages/BookTickets";
+import CompanyDashboard from "./pages/dashboard/CompanyDashboard";
+import AddMovie from "./pages/dashboard/AddMovie";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/checkout/:bookingId" element={<Checkout />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/failed" element={<Failed />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Navbar />
+        <div className="pt-16 min-h-screen bg-[rgb(var(--background))]">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/book/:movieId" element={<ProtectedRoute><BookTickets /></ProtectedRoute>} />
+            <Route path="/checkout/:bookingId" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/failed" element={<Failed />} />
+            
+            {/* Company Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute role="company"><CompanyDashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/add-movie" element={<ProtectedRoute role="company"><AddMovie /></ProtectedRoute>} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

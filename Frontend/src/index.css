@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+:root {
+  --background: 13 17 23; /* #0d1117 - Github Dark Dimmed as base */
+  --foreground: 255 255 255;
+  
+  --primary: 229 9 20; /* Netflix Red / BookMyShow Red vibe */
+  --primary-foreground: 255 255 255;
+
+  --card: 22 27 34;
+  --card-foreground: 255 255 255;
+
+  --muted: 139 148 158;
+  --border: 48 54 61;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+  
+  .btn-primary {
+    @apply bg-[rgb(var(--primary))] text-white font-bold py-2 px-6 rounded hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105;
+  }
+
+  .input-field {
+    @apply w-full bg-[#161b22] border border-[#30363d] rounded p-3 text-white focus:outline-none focus:border-[rgb(var(--primary))] transition-colors;
+  }
+}
