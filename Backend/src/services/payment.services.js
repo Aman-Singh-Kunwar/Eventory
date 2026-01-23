@@ -2,8 +2,9 @@ const redis = require("../config/redis");
 const Booking = require("../models/Booking");
 const { isIdempotent, markIdempotent } = require("../utils/idempotency");
 const kafkaProducer = require("../kafka/producer");
+const Movie = require("../models/Movie");
 
-exports.pay = async (bookingId) => {
+exports.pay = async (bookingId, io) => {
   const key = `payment:${bookingId}`;
 
   // 1. Idempotency Check
@@ -19,67 +20,88 @@ exports.pay = async (bookingId) => {
       booking = JSON.parse(tempBookingStr);
       isTemp = true;
     } else {
-      return "PAYMENT_EXPIRED"; // Booking not found in DB or Redis (expired)
+      return "PAYMENT_EXPIRED";
     }
   }
 
   if (booking.status === "CONFIRMED") return "ALREADY_PAID";
   if (booking.status === "FAILED") return "BOOKING_FAILED";
 
-  // 1.5 Validate Locks (Check if 60s window is still active)
+  // 1.5 Validate Locks
   if (booking.seatIds && booking.seatIds.length > 0) {
     for (const seatId of booking.seatIds) {
       const lockValue = await redis.get(`seat:${seatId}`);
       if (lockValue !== bookingId) {
-        // Lock expired or taken by someone else
         if (!isTemp) {
-            await Booking.updateOne({ bookingId }, { status: "TIMEOUT" });
+          await Booking.updateOne({ bookingId }, { status: "TIMEOUT" });
         }
-        return "PAYMENT_EXPIRED"; // or TIMEOUT
+        return "PAYMENT_EXPIRED";
       }
     }
   }
 
   try {
-    // 2. Simulate Payment Gateway
-    // For demo purposes, we can simulate failure for specific IDs if needed
     console.log(`Processing payment for booking: ${bookingId}`);
     await new Promise((r) => setTimeout(r, 300));
 
-    // 3. Update Status and Key (Atomic-like update)
     await markIdempotent(key, "true");
     
     if (isTemp) {
-        // Create the booking in MongoDB now
-        await Booking.create({
-            ...booking,
-            status: "CONFIRMED"
-        });
-        
-        // Remove temporary key from Redis
-        await redis.del(`tempBooking:${bookingId}`);
+      await Booking.create({
+        ...booking,
+        status: "CONFIRMED"
+      });
+      await redis.del(`tempBooking:${bookingId}`);
     } else {
-        await Booking.updateOne({ bookingId }, { status: "CONFIRMED" });
+      await Booking.updateOne({ bookingId }, { status: "CONFIRMED" });
     }
 
-    // Publish event
+    // NEW: Persist booked seats to Movie and clear Redis locks
+    if (booking.movieId && booking.seatIds && booking.seatIds.length > 0) {
+      await Movie.updateOne(
+        { _id: booking.movieId },
+        { $push: { bookedSeats: { $each: booking.seatIds } } }
+      );
+
+      for (const seatId of booking.seatIds) {
+        await redis.del(`seat:${seatId}`);
+      }
+    }
+
+    // Emit real-time payment success to all users
+    if (io && booking.movieId) {
+      booking.seatIds.forEach(seatId => {
+        io.to(`movie:${booking.movieId}`).emit('seat-confirmed', {
+          seatId,
+          bookingId,
+          movieId: booking.movieId,
+          status: 'SOLD'
+        });
+      });
+    }
+
     await kafkaProducer.publish("BOOKING_CREATED", {
-        bookingId,
-        seatIds: booking.seatIds,
+      bookingId,
+      seatIds: booking.seatIds,
     });
 
     return "SUCCESS";
   } catch (err) {
     console.error("Payment failed:", err);
 
-    // 4. Immediate Release if payment definitively fails
     if (!isTemp) {
-        await Booking.updateOne({ bookingId }, { status: "FAILED" });
+      await Booking.updateOne({ bookingId }, { status: "FAILED" });
     }
     
-    if (booking.seatIds) {
+    if (booking.seatIds && io && booking.movieId) {
       for (const seatId of booking.seatIds) {
         await redis.del(`seat:${seatId}`);
+        
+        io.to(`movie:${booking.movieId}`).emit('seat-unlocked', {
+          seatId,
+          movieId: booking.movieId,
+          reason: 'payment-failed'
+        });
       }
     }
 

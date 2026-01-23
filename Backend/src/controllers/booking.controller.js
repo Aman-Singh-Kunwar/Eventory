@@ -4,7 +4,8 @@ const Booking = require("../models/Booking");
 const Movie = require("../models/Movie");
 
 exports.pay = async (req, res) => {
-  const result = await paymentService.pay(req.params.bookingId);
+  const io = req.app.get('io');
+  const result = await paymentService.pay(req.params.bookingId, io);
   res.json({ status: result });
 };
 
@@ -12,7 +13,6 @@ exports.getBooking = async (req, res) => {
   try {
     let booking = await Booking.findOne({ bookingId: req.params.bookingId });
     if (!booking) {
-      // Check Redis for temporary booking
       const tempBookingStr = await redis.get(`tempBooking:${req.params.bookingId}`);
       if (tempBookingStr) {
         booking = JSON.parse(tempBookingStr);
@@ -44,11 +44,9 @@ exports.getMyBookings = async (req, res) => {
 
 exports.getCompanyBookings = async (req, res) => {
   try {
-    // 1. Find movies owned by this company
     const movies = await Movie.find({ company: req.userData.userId }).select('_id');
     const movieIds = movies.map(m => m._id);
 
-    // 2. Find bookings for these movies
     const bookings = await Booking.find({ movieId: { $in: movieIds } })
       .populate('userId', 'name email')
       .populate('movieId', 'title')
@@ -63,13 +61,11 @@ exports.getCompanyBookings = async (req, res) => {
 exports.getMyRewards = async (req, res) => {
   try {
     const userId = req.userData.userId;
-    // Find confirmed bookings for this user
     const bookings = await Booking.find({ 
       userId, 
       status: 'CONFIRMED' 
     }).populate('movieId', 'title');
 
-    // Calculate rewards
     const rewards = bookings
       .filter(booking => booking.seatIds.length > 3)
       .map(booking => ({

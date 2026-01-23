@@ -52,6 +52,10 @@ const movieSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  bookedSeats: {
+    type: [String],
+    default: []
   }
 });
 

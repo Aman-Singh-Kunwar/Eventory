@@ -4,7 +4,6 @@ const Booking = require("../models/Booking");
 const { v4: uuid } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-const kafkaProducer = require("../kafka/producer");
 
 const lua = fs.readFileSync(
   path.join(__dirname, "../redis/seatLock.lua"),
@@ -23,17 +22,35 @@ exports.reserveSeats = async (req, res) => {
   const lockedSeats = [];
 
   try {
+    // Get Socket.IO instance
+    const io = req.app.get('io');
+
     for (const seatId of seatIds) {
-      // Lock for 60 seconds (60000 ms) as per requirement
+      // Lock for 60 seconds (60000 ms)
       const locked = await redis.eval(lua, 1, `seat:${seatId}`, bookingId, 60000);
       if (!locked) {
         // Rollback already acquired locks
         for (const id of lockedSeats) {
           await redis.del(`seat:${id}`);
+          
+          // Emit unlock event
+          io.to(`movie:${movieId}`).emit('seat-unlocked', {
+            seatId: id,
+            movieId
+          });
         }
         return res.status(409).json({ message: `Seat ${seatId} already booked` });
       }
       lockedSeats.push(seatId);
+
+      // Emit real-time seat lock event to all users in this movie room
+      io.to(`movie:${movieId}`).emit('seat-locked', {
+        seatId,
+        bookingId,
+        userId,
+        movieId,
+        status: 'SELECTED'
+      });
     }
 
     // Store temporary booking in Redis for 60 seconds
@@ -54,14 +71,46 @@ exports.reserveSeats = async (req, res) => {
       60
     );
 
-    // Note: We do NOT create a MongoDB record here. 
-    // We also moved Kafka publishing to the payment service, 
-    // as the booking is only "real" after payment.
+    // Set auto-unlock timer (60 seconds)
+    setTimeout(async () => {
+      try {
+        // Check if booking is still pending
+        const bookingStatus = await redis.get(`tempBooking:${bookingId}`);
+        if (bookingStatus) {
+          // Booking not paid, unlock seats
+          for (const seatId of seatIds) {
+            await redis.del(`seat:${seatId}`);
+            
+            // Emit unlock event
+            io.to(`movie:${movieId}`).emit('seat-unlocked', {
+              seatId,
+              movieId,
+              reason: 'timeout'
+            });
+          }
+          
+          // Delete temp booking
+          await redis.del(`tempBooking:${bookingId}`);
+          
+          console.log(`Auto-unlocked seats for booking: ${bookingId}`);
+        }
+      } catch (error) {
+        console.error('Auto-unlock error:', error);
+      }
+    }, 60000);
 
     res.json({ bookingId });
   } catch (error) {
+    const io = req.app.get('io');
+    
     for (const id of lockedSeats) {
       await redis.del(`seat:${id}`);
+      
+      // Emit unlock event
+      io.to(`movie:${movieId}`).emit('seat-unlocked', {
+        seatId: id,
+        movieId
+      });
     }
     res.status(500).json({ message: "Reservation failed", error: error.message });
   }
