@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const seatRoutes = require("./routes/seat.routes");
 const bookingRoutes = require("./routes/booking.routes");
@@ -10,6 +11,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Serve uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/seats", seatRoutes);
 app.use("/api/bookings", bookingRoutes);

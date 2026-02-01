@@ -1,14 +1,20 @@
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
+    container_name: eventory-zookeeper
+    networks:
+      - eventory-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
+    container_name: eventory-kafka
     depends_on:
       - zookeeper
+    networks:
+      - eventory-network
     ports:
       - "9092:9092"
     environment:
@@ -21,15 +27,69 @@ services:
 
   redis:
     image: redis:alpine
+    container_name: eventory-redis
+    networks:
+      - eventory-network
     ports:
       - "6379:6379"
 
   mongodb:
     image: mongo:latest
+    container_name: eventory-mongodb
+    networks:
+      - eventory-network
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - flash-sale-concurrency-guard_mongodb_data:/data/db
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: eventory-backend
+    depends_on:
+      - mongodb
+      - redis
+      - kafka
+    networks:
+      - eventory-network
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/eventory
+      - REDIS_URL=redis://redis:6379
+      - KAFKA_BROKERS=kafka:29092
+      - KAFKA_CLIENT_ID=ticketing-app
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+      - SEAT_LOCK_TTL=300000
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: eventory-frontend
+    depends_on:
+      - backend
+    networks:
+      - eventory-network
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+
+networks:
+  eventory-network:
+    driver: bridge
 
 volumes:
-  mongodb_data:
+  flash-sale-concurrency-guard_mongodb_data:
+    external: true
