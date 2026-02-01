@@ -27,13 +27,23 @@ export default function ScratchCard() {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#4b5563'; // gray-600
+        
+        // Create gradient background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#4b5563');
+        gradient.addColorStop(1, '#2d3748');
+        
+        ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = '20px Arial';
-        ctx.fillStyle = '#ffffff';
+        // Add sparkle effect
+        ctx.font = 'bold 20px Arial';
+        ctx.fillStyle = '#fbbf24';
         ctx.textAlign = 'center';
-        ctx.fillText('Scratch Me!', canvas.width / 2, canvas.height / 2 + 7);
+        ctx.shadowColor = 'rgba(251, 191, 36, 0.5)';
+        ctx.shadowBlur = 10;
+        ctx.fillText('✨ Scratch Me! ✨', canvas.width / 2, canvas.height / 2 + 7);
+        ctx.shadowColor = 'transparent';
     };
 
     const scratch = (e) => {
@@ -67,29 +77,32 @@ export default function ScratchCard() {
     };
 
     return (
-        <div className="flex flex-col items-center mt-6 p-4 rounded-xl bg-linear-to-br from-indigo-900/40 to-purple-900/40 border border-white/10 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-2 opacity-20">
-                <Sparkles className="w-12 h-12 text-yellow-400" />
+        <div className="flex flex-col items-center mt-8 p-6 rounded-2xl bg-linear-to-br from-indigo-900/50 to-purple-900/50 border border-white/15 shadow-2xl hover:shadow-[0_20px_60px_rgba(168,85,247,0.3)] relative overflow-hidden transition-all">
+            <div className="absolute top-0 right-0 p-2 opacity-30 animate-pulse">
+                <Sparkles className="w-14 h-14 text-yellow-400" />
             </div>
 
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Gift className="text-yellow-400" />Your Special Reward!
+            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-yellow-400/20">
+                  <Gift className="w-6 h-6 text-yellow-400" />
+                </div>
+                Your Special Reward!
             </h3>
 
-            <div className="relative w-64 h-32 rounded-lg overflow-hidden border-2 border-dashed border-white/20">
+            <div className="relative w-72 h-40 rounded-xl overflow-hidden border-2 border-dashed border-yellow-400/40 bg-linear-to-br from-yellow-50 to-amber-50 hover:border-yellow-400/60 transition-colors">
                 {reward && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white text-gray-900 p-2 text-center">
-                        <span className="text-4xl mb-1">{reward.icon}</span>
-                        <p className="font-bold text-sm">{reward.text}</p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-white to-yellow-50 text-gray-900 p-4 text-center">
+                        <span className="text-6xl mb-2 animate-bounce">{reward.icon}</span>
+                        <p className="font-bold text-base leading-tight">{reward.text}</p>
                     </div>
                 )}
 
                 {!scratched && (
                     <canvas
                         ref={canvasRef}
-                        width={256}
-                        height={128}
-                        className="absolute inset-0 cursor-crosshair touch-none"
+                        width={288}
+                        height={160}
+                        className="absolute inset-0 cursor-crosshair touch-none hover:opacity-90 transition-opacity"
                         onMouseDown={() => (isDrawing.current = true)}
                         onMouseUp={() => (isDrawing.current = false)}
                         onMouseMove={scratch}
@@ -101,8 +114,8 @@ export default function ScratchCard() {
             </div>
 
             {scratched && (
-                <p className="text-yellow-400 mt-4 font-bold animate-bounce">
-                    Congratulations! You won!
+                <p className="text-yellow-300 mt-6 font-bold text-lg animate-bounce drop-shadow-lg">
+                    🎉 Congratulations! You won! 🎉
                 </p>
             )}
 

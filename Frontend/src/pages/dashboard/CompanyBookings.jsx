@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Users, Search } from 'lucide-react';
+import { Users, Search, ArrowLeft } from 'lucide-react';
 
 export default function CompanyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -41,7 +42,12 @@ export default function CompanyBookings() {
             </h1>
             <p className="text-gray-400 mt-1">View all ticket sales across your movies</p>
           </div>
-          <div className="relative">
+          <div className="flex gap-4 items-center">
+            <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              Back to Dashboard
+            </Link>
+            <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
             <input 
               type="text" 
@@ -50,6 +56,7 @@ export default function CompanyBookings() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-[#1c1f26] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-[rgb(var(--primary))]"
             />
+            </div>
           </div>
         </div>
       </div>

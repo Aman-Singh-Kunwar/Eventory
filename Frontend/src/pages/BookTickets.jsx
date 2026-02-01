@@ -192,15 +192,16 @@ export default function BookTickets() {
 
   if (requestedSeats === 0) {
     return (
-      <div className="min-h-screen pt-16 pb-20 flex flex-col items-center justify-center px-4">
-        <div className="rounded-2xl p-8 w-full max-w-md text-center bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-          <h2 className="text-2xl font-bold text-white mb-6">Select Ticket Quantity</h2>
-          <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="min-h-screen pt-16 pb-20 flex flex-col items-center justify-center px-4 bg-linear-to-br from-[#0d1117] via-[#0d1117] to-[#161b22]">
+        <div className="rounded-3xl p-8 w-full max-w-md text-center bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:border-white/20 transition-colors">
+          <h2 className="text-3xl font-bold text-white mb-2">Select Ticket Quantity</h2>
+          <p className="text-gray-400 mb-8">How many tickets do you need?</p>
+          <div className="grid grid-cols-4 gap-3 mb-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
               <button
                 key={num}
                 onClick={() => setRequestedSeats(num)}
-                className="p-4 bg-gray-800 hover:bg-[rgb(var(--primary))] text-white rounded-lg transition-colors font-bold"
+                className="p-4 bg-linear-to-br from-gray-700 to-gray-800 hover:from-[rgb(var(--primary))] hover:to-red-600 text-white rounded-xl transition-all font-bold shadow-lg hover:shadow-red-500/50 transform hover:scale-110"
               >
                 {num}
               </button>
@@ -208,9 +209,9 @@ export default function BookTickets() {
           </div>
           <button
             onClick={() => navigate(-1)}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white transition-colors text-sm"
           >
-            Cancel
+            ← Cancel
           </button>
         </div>
       </div>

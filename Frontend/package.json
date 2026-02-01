@@ -1,8 +1,10 @@
 {
-  "name": "bookmyshow-frontend",
+  "name": "eventory-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Movie ticket booking application - React frontend for Eventory",
+  "author": "Eventory Team",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

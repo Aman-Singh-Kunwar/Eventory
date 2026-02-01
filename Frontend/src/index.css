@@ -27,10 +27,118 @@ body {
   }
 
   .btn-primary {
-    @apply bg-[rgb(var(--primary))] text-white font-bold py-2 px-6 rounded hover:bg-[rgb(var(--primary))/0.9] transition-all duration-300 transform hover:scale-105;
+    @apply bg-linear-to-r from-[rgb(var(--primary))] to-red-600 text-white font-bold py-2 px-6 rounded-lg 
+           hover:shadow-[0_20px_40px_rgba(229,9,20,0.2)] transition-all duration-300 transform hover:scale-105 
+           active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-white/5 border border-white/20 text-white font-semibold py-2 px-6 rounded-lg
+           hover:bg-white/10 hover:border-white/40 transition-all duration-300 
+           hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)];
   }
 
   .input-field {
-    @apply w-full bg-[#161b22] border border-[#30363d] rounded p-3 text-white focus:outline-none focus:border-[rgb(var(--primary))] transition-colors;
+    @apply w-full bg-[#161b22] border border-[#30363d] rounded-lg p-3 text-white 
+           placeholder-gray-500 focus:outline-none focus:border-[rgb(var(--primary))] 
+           focus:ring-2 focus:ring-[rgb(var(--primary))]/20 transition-all duration-300;
   }
+
+  .gradient-text {
+    @apply bg-linear-to-r from-[rgb(var(--primary))] to-pink-500 bg-clip-text text-transparent;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-[0_20px_40px_rgba(229,9,20,0.1)] hover:scale-105;
+  }
+
+  .smooth-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .badge-icon {
+    @apply w-5 h-5 rounded-full bg-linear-to-br from-[rgb(var(--primary))] to-red-600 
+           flex items-center justify-center text-white shadow-lg;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.5), 0 0 40px rgba(229, 9, 20, 0.2);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.7), 0 0 60px rgba(229, 9, 20, 0.3);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(229, 9, 20, 0.3);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(229, 9, 20, 0.5);
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgba(229, 9, 20, 0.3);
+  color: rgb(255, 255, 255);
+}
+
+/* Animation for modal entrance */
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-slide-in-scale {
+  animation: slideInScale 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

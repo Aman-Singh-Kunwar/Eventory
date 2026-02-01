@@ -100,126 +100,152 @@ export default function AddMovie() {
 
   return (
     <>
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-linear-to-br from-[#0d1117] via-[#0d1117] to-[#161b22] max-w-4xl mx-auto px-4 py-8">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-gray-400 hover:text-white mb-6"
+        className="flex items-center text-gray-400 hover:text-white mb-8 transition-all group"
       >
-        <ChevronLeft className="w-4 h-4 mr-1" /> Back to Dashboard
+        <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
       </button>
 
-      <div className="bg-[#0d1117]/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-        <div className="flex items-start justify-between mb-6">
+      <div className="bg-[#0d1117]/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:border-white/20 transition-colors">
+        <div className="flex items-start justify-between mb-8">
           <div>
-            <p className="text-sm text-gray-400">Create a listing</p>
-            <h1 className="text-3xl font-extrabold text-white">Add New Movie</h1>
-            <p className="text-gray-400 mt-1">Poster, language, pricing, trailer, and release details</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">Create a listing</p>
+            <h1 className="text-4xl font-extrabold text-white">Add New Movie</h1>
+            <p className="text-gray-400 mt-2">Poster, language, pricing, trailer, and release details</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Movie Title</label>
-              <input type="text" name="title" required className="input-field" onChange={handleChange} />
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Movie Title</label>
+              <input type="text" name="title" required className="input-field" onChange={handleChange} placeholder="Enter movie title" />
             </div>
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Genre (comma separated)</label>
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Genre (comma separated)</label>
               <input type="text" name="genre" placeholder="Action, Drama, Sci-Fi" required className="input-field" onChange={handleChange} />
             </div>
           </div>
 
           <div>
-            <label className="block text-gray-400 text-sm font-medium mb-1">Description</label>
-            <textarea name="description" rows="4" required className="input-field" onChange={handleChange}></textarea>
+            <label className="block text-gray-300 text-sm font-semibold mb-2">Description</label>
+            <textarea name="description" rows="4" required className="input-field focus:ring-2 focus:ring-[rgb(var(--primary))]/30" onChange={handleChange} placeholder="Enter movie description"></textarea>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Duration (minutes)</label>
-              <input type="number" name="duration" required className="input-field" onChange={handleChange} />
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Duration (minutes)</label>
+              <input type="number" name="duration" required className="input-field" onChange={handleChange} placeholder="120" />
             </div>
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Language</label>
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Language</label>
               <input type="text" name="language" className="input-field" value={formData.language} onChange={handleChange} />
             </div>
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Ticket Price (₹)</label>
-              <input type="number" name="price" min="0" className="input-field" value={formData.price} onChange={handleChange} />
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Ticket Price (₹)</label>
+              <input type="number" name="price" min="0" className="input-field" value={formData.price} onChange={handleChange} placeholder="250" />
             </div>
-            <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Release Date</label>
-              <input type="date" name="releaseDate" required className="input-field" onChange={handleChange} />
-            </div>
+          </div>
+
+          {/* Release Date */}
+          <div>
+            <label className="block text-gray-300 text-sm font-semibold mb-2">Release Date</label>
+            <input type="date" name="releaseDate" required className="input-field" onChange={handleChange} />
+          </div>
+
+          {/* Image Uploads Section Header */}
+          <div className="pt-4 border-t border-white/10">
+            <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold">Media & Content</p>
+            <h3 className="text-xl font-bold text-white mt-1 mb-6">Upload Posters & Trailer</h3>
           </div>
 
           {/* Image Uploads */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Poster Image */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <label className="block text-gray-400 text-sm font-medium">Poster Image</label>
-                <button type="button" onClick={() => toggleUploadType('poster')} className="text-xs text-[rgb(var(--primary))] hover:underline flex items-center gap-1">
-                  {uploadType.poster === 'file' ? <><LinkIcon className="w-3 h-3"/> Use URL</> : <><Upload className="w-3 h-3"/> Upload File</>}
+                <label className="block text-gray-300 text-sm font-semibold">Poster Image</label>
+                <button type="button" onClick={() => toggleUploadType('poster')} className="text-xs text-[rgb(var(--primary))] hover:text-red-400 transition-colors flex items-center gap-1 font-medium">
+                  {uploadType.poster === 'file' ? <><LinkIcon className="w-3 h-3"/> URL</> : <><Upload className="w-3 h-3"/> Upload</>}
                 </button>
               </div>
               
               {uploadType.poster === 'file' ? (
-                <div className="relative border-2 border-dashed border-white/20 rounded-lg p-4 hover:border-[rgb(var(--primary))] transition-colors text-center">
+                <div className="relative border-2 border-dashed border-white/20 hover:border-[rgb(var(--primary))]/50 rounded-xl p-6 transition-all duration-300 text-center group cursor-pointer">
                   <input type="file" name="poster" onChange={handleFileChange} accept="image/*" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required={!formData.posterUrl} />
                   {previewUrls.poster ? (
-                    <img src={previewUrls.poster} alt="Poster Preview" className="mx-auto h-32 object-contain" />
+                    <div className="space-y-2">
+                      <img src={previewUrls.poster} alt="Poster Preview" className="mx-auto h-40 object-contain rounded-lg" />
+                      <p className="text-xs text-gray-400">Click to replace</p>
+                    </div>
                   ) : (
-                    <div className="py-8">
-                       <Upload className="w-8 h-8 mx-auto text-gray-500 mb-2" />
-                       <p className="text-sm text-gray-400">Click to upload poster</p>
+                    <div className="py-10">
+                       <Upload className="w-10 h-10 mx-auto text-gray-600 mb-3 group-hover:text-[rgb(var(--primary))]/50 transition-colors" />
+                       <p className="text-sm font-medium text-gray-300">Click to upload poster</p>
+                       <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
                     </div>
                   )}
                 </div>
               ) : (
-                <input type="url" name="posterUrl" placeholder="https://..." className="input-field" value={formData.posterUrl} onChange={handleChange} required={!files.poster} />
+                <input type="url" name="posterUrl" placeholder="https://example.com/poster.jpg" className="input-field" value={formData.posterUrl} onChange={handleChange} required={!files.poster} />
               )}
             </div>
 
             {/* Background Image */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center">
-                 <label className="block text-gray-400 text-sm font-medium">Background/Hero Image</label>
-                 <button type="button" onClick={() => toggleUploadType('background')} className="text-xs text-[rgb(var(--primary))] hover:underline flex items-center gap-1">
-                  {uploadType.background === 'file' ? <><LinkIcon className="w-3 h-3"/> Use URL</> : <><Upload className="w-3 h-3"/> Upload File</>}
+                 <label className="block text-gray-300 text-sm font-semibold">Background Image</label>
+                 <button type="button" onClick={() => toggleUploadType('background')} className="text-xs text-[rgb(var(--primary))] hover:text-red-400 transition-colors flex items-center gap-1 font-medium">
+                  {uploadType.background === 'file' ? <><LinkIcon className="w-3 h-3"/> URL</> : <><Upload className="w-3 h-3"/> Upload</>}
                 </button>
               </div>
 
               {uploadType.background === 'file' ? (
-                <div className="relative border-2 border-dashed border-white/20 rounded-lg p-4 hover:border-[rgb(var(--primary))] transition-colors text-center">
+                <div className="relative border-2 border-dashed border-white/20 hover:border-[rgb(var(--primary))]/50 rounded-xl p-6 transition-all duration-300 text-center group cursor-pointer">
                   <input type="file" name="background" onChange={handleFileChange} accept="image/*" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   {previewUrls.background ? (
-                    <img src={previewUrls.background} alt="Background Preview" className="mx-auto h-32 object-contain" />
+                    <div className="space-y-2">
+                      <img src={previewUrls.background} alt="Background Preview" className="mx-auto h-40 object-contain rounded-lg" />
+                      <p className="text-xs text-gray-400">Click to replace</p>
+                    </div>
                   ) : (
-                    <div className="py-8">
-                       <Upload className="w-8 h-8 mx-auto text-gray-500 mb-2" />
-                       <p className="text-sm text-gray-400">Click to upload background</p>
+                    <div className="py-10">
+                       <Upload className="w-10 h-10 mx-auto text-gray-600 mb-3 group-hover:text-[rgb(var(--primary))]/50 transition-colors" />
+                       <p className="text-sm font-medium text-gray-300">Click to upload background</p>
+                       <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 10MB</p>
                     </div>
                   )}
                 </div>
               ) : (
-                <input type="url" name="backgroundUrl" placeholder="https://..." className="input-field" value={formData.backgroundUrl} onChange={handleChange} />
+                <input type="url" name="backgroundUrl" placeholder="https://example.com/bg.jpg" className="input-field" value={formData.backgroundUrl} onChange={handleChange} />
               )}
             </div>
           </div>
 
-          <div>
-            <label className="block text-gray-400 text-sm font-medium mb-1">Trailer URL (YouTube or Video Link)</label>
+          {/* Trailer URL */}
+          <div className="space-y-3 pt-2">
+            <label className="block text-gray-300 text-sm font-semibold">Trailer URL</label>
             <input type="url" name="trailerUrl" placeholder="https://www.youtube.com/watch?v=..." className="input-field" value={formData.trailerUrl} onChange={handleChange} />
-            <p className="text-gray-500 text-xs mt-1">Optional: Add a YouTube or video link for the trailer</p>
+            <p className="text-gray-500 text-xs">YouTube link or direct video URL (optional)</p>
           </div>
 
-          <div className="pt-4 border-t border-[#30363d] flex items-center gap-4 flex-wrap">
-            <button type="submit" disabled={loading} className="btn-primary w-full md:w-auto md:px-12">
+          {/* Action Buttons */}
+          <div className="pt-6 border-t border-white/10 flex items-center gap-3 flex-wrap">
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className={`btn-primary px-8 font-semibold transition-all ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_20px_40px_rgba(229,9,20,0.2)]'}`}
+            >
               {loading ? "Publishing..." : "Publish Movie"}
             </button>
-            <button type="button" onClick={() => setShowPreview(true)} className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-lg border border-white/10 transition-colors">
+            <button 
+              type="button" 
+              onClick={() => setShowPreview(true)} 
+              className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-lg border border-white/20 transition-all duration-300 hover:border-white/40 hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+            >
               Preview
             </button>
           </div>

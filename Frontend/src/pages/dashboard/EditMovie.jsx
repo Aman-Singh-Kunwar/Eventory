@@ -92,27 +92,27 @@ export default function EditMovie() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="min-h-screen bg-linear-to-br from-[#0d1117] via-[#0d1117] to-[#161b22] max-w-4xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-gray-400 hover:text-white mb-6"
+          className="flex items-center text-gray-400 hover:text-white mb-8 transition-all group"
         >
-          <ChevronLeft className="w-4 h-4 mr-1" /> Back to Dashboard
+          <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
         </button>
 
-        <div className="bg-[#0d1117]/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-          <div className="flex items-start justify-between mb-6">
+        <div className="bg-[#0d1117]/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:border-white/20 transition-colors">
+          <div className="flex items-start justify-between mb-8">
             <div>
-              <p className="text-sm text-gray-400">Editing movie</p>
-              <h1 className="text-3xl font-extrabold text-white">{formData.title || "Movie"}</h1>
-              <p className="text-gray-400 mt-1">Update poster, language, pricing, trailer, and schedule</p>
+              <p className="text-sm text-gray-500 uppercase tracking-wider">Editing movie</p>
+              <h1 className="text-4xl font-extrabold text-white">{formData.title || "Movie"}</h1>
+              <p className="text-gray-400 mt-2">Update poster, language, pricing, trailer, and schedule</p>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Movie Title</label>
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Movie Title</label>
                 <input
                   type="text"
                   name="title"
@@ -120,10 +120,11 @@ export default function EditMovie() {
                   className="input-field"
                   value={formData.title}
                   onChange={handleChange}
+                  placeholder="Enter movie title"
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Genre (comma separated)</label>
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Genre (comma separated)</label>
                 <input
                   type="text"
                   name="genre"
@@ -137,20 +138,21 @@ export default function EditMovie() {
             </div>
 
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Description</label>
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Description</label>
               <textarea
                 name="description"
                 rows="4"
                 required
-                className="input-field"
+                className="input-field focus:ring-2 focus:ring-[rgb(var(--primary))]/30"
                 value={formData.description}
                 onChange={handleChange}
+                placeholder="Enter movie description"
               ></textarea>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Duration (minutes)</label>
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Duration (minutes)</label>
                 <input
                   type="number"
                   name="duration"
@@ -158,20 +160,22 @@ export default function EditMovie() {
                   className="input-field"
                   value={formData.duration}
                   onChange={handleChange}
+                  placeholder="120"
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Language</label>
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Language</label>
                 <input
                   type="text"
                   name="language"
                   className="input-field"
                   value={formData.language}
                   onChange={handleChange}
+                  placeholder="English"
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Ticket Price (₹)</label>
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Ticket Price (₹)</label>
                 <input
                   type="number"
                   name="price"
@@ -179,49 +183,63 @@ export default function EditMovie() {
                   className="input-field"
                   value={formData.price}
                   onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Release Date</label>
-                <input
-                  type="date"
-                  name="releaseDate"
-                  required
-                  className="input-field"
-                  value={formData.releaseDate}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Poster Image URL</label>
-                <input
-                  type="url"
-                  name="posterUrl"
-                  placeholder="https://..."
-                  required
-                  className="input-field"
-                  value={formData.posterUrl}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-400 text-sm font-medium mb-1">Background/Hero Image URL</label>
-                <input
-                  type="url"
-                  name="backgroundUrl"
-                  placeholder="https://..."
-                  className="input-field"
-                  value={formData.backgroundUrl}
-                  onChange={handleChange}
+                  placeholder="250"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-gray-400 text-sm font-medium mb-1">Trailer URL (YouTube or Video Link)</label>
+              <label className="block text-gray-300 text-sm font-semibold mb-2">Release Date</label>
+              <input
+                type="date"
+                name="releaseDate"
+                required
+                className="input-field"
+                value={formData.releaseDate}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Media & Content Section */}
+            <div className="pt-4 border-t border-white/10">
+              <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold">Media & Content</p>
+              <h3 className="text-xl font-bold text-white mt-1 mb-6">Update Posters & Trailer</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="block text-gray-300 text-sm font-semibold">Poster Image URL</label>
+                <input
+                  type="url"
+                  name="posterUrl"
+                  placeholder="https://example.com/poster.jpg"
+                  required
+                  className="input-field"
+                  value={formData.posterUrl}
+                  onChange={handleChange}
+                />
+                {formData.posterUrl && (
+                  <img src={formData.posterUrl} alt="Poster Preview" className="rounded-lg h-32 object-contain mx-auto" />
+                )}
+              </div>
+              <div className="space-y-3">
+                <label className="block text-gray-300 text-sm font-semibold">Background/Hero Image URL</label>
+                <input
+                  type="url"
+                  name="backgroundUrl"
+                  placeholder="https://example.com/bg.jpg"
+                  className="input-field"
+                  value={formData.backgroundUrl}
+                  onChange={handleChange}
+                />
+                {formData.backgroundUrl && (
+                  <img src={formData.backgroundUrl} alt="Background Preview" className="rounded-lg h-32 object-contain mx-auto" />
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block text-gray-300 text-sm font-semibold">Trailer URL</label>
               <input
                 type="url"
                 name="trailerUrl"
@@ -230,14 +248,14 @@ export default function EditMovie() {
                 value={formData.trailerUrl}
                 onChange={handleChange}
               />
-              <p className="text-gray-500 text-xs mt-1">Optional: Add a YouTube or video link for the trailer</p>
+              <p className="text-gray-500 text-xs">YouTube link or direct video URL (optional)</p>
             </div>
 
-            <div className="pt-4 border-t border-[#30363d] flex items-center gap-4 flex-wrap">
+            <div className="pt-6 border-t border-white/10 flex items-center gap-3 flex-wrap">
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary md:px-12 flex items-center justify-center gap-2"
+                className={`btn-primary px-8 font-semibold flex items-center justify-center gap-2 transition-all ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_20px_40px_rgba(229,9,20,0.2)]'}`}
               >
                 {loading ? "Saving..." : (
                   <>
@@ -248,14 +266,14 @@ export default function EditMovie() {
               <button
                 type="button"
                 onClick={() => setShowPreview(true)}
-                className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-lg border border-white/10 transition-colors"
+                className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-lg border border-white/20 transition-all duration-300 hover:border-white/40 hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
               >
                 Preview
               </button>
               <button
                 type="button"
                 onClick={() => navigate("/dashboard")}
-                className="px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+                className="px-6 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300 font-medium"
               >
                 Cancel
               </button>

@@ -1,95 +1,86 @@
+# Eventory - Movie Ticket Booking System
+# Docker Compose Configuration
+
+version: '3.8'
+
 services:
+  # Zookeeper (required for Kafka coordination)
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
-    container_name: eventory-zookeeper
-    networks:
-      - eventory-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # Kafka (Event streaming and message queue)
   kafka:
     image: confluentinc/cp-kafka:7.4.0
-    container_name: eventory-kafka
     depends_on:
-      - zookeeper
-    networks:
-      - eventory-network
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # Redis (Concurrency control, caching, and seat locking)
   redis:
-    image: redis:alpine
-    container_name: eventory-redis
-    networks:
-      - eventory-network
+    image: redis:7-alpine
     ports:
       - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # MongoDB (Primary database)
   mongodb:
-    image: mongo:latest
-    container_name: eventory-mongodb
-    networks:
-      - eventory-network
+    image: mongo:7.0
     ports:
       - "27017:27017"
-    volumes:
-      - flash-sale-concurrency-guard_mongodb_data:/data/db
-
-  backend:
-    build:
-      context: ./Backend
-      dockerfile: Dockerfile
-    container_name: eventory-backend
-    depends_on:
-      - mongodb
-      - redis
-      - kafka
-    networks:
-      - eventory-network
-    ports:
-      - "5000:5000"
     environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - MONGO_URI=mongodb://mongodb:27017/eventory
-      - REDIS_URL=redis://redis:6379
-      - KAFKA_BROKERS=kafka:29092
-      - KAFKA_CLIENT_ID=ticketing-app
-      - KAFKAJS_NO_PARTITIONER_WARNING=1
-      - SEAT_LOCK_TTL=300000
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: eventory
     volumes:
-      - ./Backend:/app
-      - /app/node_modules
-
-  frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: eventory-frontend
-    depends_on:
-      - backend
-    networks:
-      - eventory-network
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_URL=http://localhost:5000
-    volumes:
-      - ./Frontend:/app
-      - /app/node_modules
-
-networks:
-  eventory-network:
-    driver: bridge
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  flash-sale-concurrency-guard_mongodb_data:
-    external: true
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: eventory-network
+    driver: bridge

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Gift, Award, Copy } from 'lucide-react';
+import { Gift, Award, Copy, ArrowLeft } from 'lucide-react';
 
 export default function MyRewards() {
   const [rewards, setRewards] = useState([]);
@@ -32,10 +33,16 @@ export default function MyRewards() {
   return (
     <div className="min-h-screen bg-[rgb(var(--background))] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
-          <Award className="w-8 h-8 text-[rgb(var(--primary))]" />
-          My Rewards
-        </h1>
+        <div className="flex items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Award className="w-8 h-8 text-[rgb(var(--primary))]" />
+            My Rewards
+          </h1>
+          <Link to="/" className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            Back Home
+          </Link>
+        </div>
 
         <div className="bg-[#1f2937]/50 border border-white/10 rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-bold text-white mb-2">How to earn rewards?</h2>

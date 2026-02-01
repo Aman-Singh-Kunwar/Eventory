@@ -50,7 +50,7 @@ export default function Signup() {
     <div className="flex items-center justify-center min-h-screen pt-12 py-10 px-4">
       <div className="rounded-2xl p-8 w-full max-w-md bg-[#0d1117]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
         <h2 className="text-3xl font-bold mb-2 text-center text-white">
-          Join <span className="text-[rgb(var(--primary))]">BookMyShow</span>
+          Join <span className="text-[rgb(var(--primary))]">Eventory</span>
         </h2>
         <p className="text-center text-gray-400 text-sm mb-6">Create your account to book tickets</p>
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Calendar, Clock, Ticket } from 'lucide-react';
+import { Calendar, Clock, Ticket, ArrowLeft } from 'lucide-react';
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -29,10 +30,16 @@ export default function MyBookings() {
   return (
     <div className="min-h-screen bg-[rgb(var(--background))] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
-          <Ticket className="w-8 h-8 text-[rgb(var(--primary))]" />
-          My Bookings
-        </h1>
+        <div className="flex items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Ticket className="w-8 h-8 text-[rgb(var(--primary))]" />
+            My Bookings
+          </h1>
+          <Link to="/" className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+            Back Home
+          </Link>
+        </div>
 
         {loading ? (
           <div className="text-center text-gray-400 py-10">Loading bookings...</div>
@@ -80,7 +87,7 @@ export default function MyBookings() {
                     </div>
                   </div>
                   {booking.movieId?.posterUrl && (
-                    <div className="w-24 h-36 flex-shrink-0 rounded-lg overflow-hidden border border-white/10">
+                    <div className="w-24 h-36 shrink-0 rounded-lg overflow-hidden border border-white/10">
                       <img src={booking.movieId.posterUrl} alt={booking.movieId.title} className="w-full h-full object-cover" />
                     </div>
                   )}

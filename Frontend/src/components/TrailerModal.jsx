@@ -27,25 +27,25 @@ export default function TrailerModal({ url, onClose }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl px-4" onClick={onClose}>
-      <div className="relative w-full max-w-5xl rounded-3xl overflow-hidden border border-white/15 shadow-[0_20px_80px_rgba(0,0,0,0.45)] bg-[#0d1117]/95" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-2xl px-4 py-8 opacity-100 transition-opacity duration-300" onClick={onClose}>
+      <div className="relative w-full max-w-5xl rounded-3xl overflow-hidden border border-white/20 shadow-[0_25px_100px_rgba(0,0,0,0.5)] bg-[#0d1117]/98 transform scale-100 transition-transform duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-white/5 via-transparent to-white/5" />
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5 backdrop-blur">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/15 bg-linear-to-r from-white/5 to-white/0 backdrop-blur-lg">
           <div className="flex items-center gap-3 text-white">
-            <div className="p-2 rounded-full bg-white/10"><Film className="w-5 h-5" /></div>
+            <div className="p-2 rounded-full bg-linear-to-br from-[rgb(var(--primary))] to-red-600 shadow-lg"><Film className="w-5 h-5" /></div>
             <div>
-              <p className="text-xs text-white/70">Now Playing</p>
-              <p className="text-sm font-semibold">Trailer</p>
+              <p className="text-xs text-white/60 font-medium">NOW PLAYING</p>
+              <p className="text-sm font-bold">Trailer</p>
             </div>
           </div>
           <button
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            className="p-2 rounded-full bg-white/10 hover:bg-[rgb(var(--primary))]/30 text-white transition-all duration-300 hover:shadow-[0_10px_25px_rgba(229,9,20,0.2)]"
             onClick={onClose}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="aspect-video bg-black">
+        <div className="aspect-video bg-black/80">
           <iframe
             src={embedUrl}
             title="Trailer"

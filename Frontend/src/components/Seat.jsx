@@ -22,9 +22,12 @@ export default function Seat({ seatId }) {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="bg-green-600 hover:bg-green-700 text-white
-                 px-6 py-3 rounded-lg font-semibold
-                 disabled:bg-gray-400"
+      className="bg-linear-to-br from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 
+                 text-white px-6 py-3 rounded-lg font-semibold shadow-lg
+                 hover:shadow-[0_10px_25px_rgba(16,185,129,0.3)]
+                 transition-all duration-300 ease-out
+                 hover:scale-105 active:scale-95
+                 disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-60 disabled:cursor-not-allowed"
     >
       {loading ? "Reserving..." : seatId}
     </button>
